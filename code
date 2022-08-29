@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define width 210
-#define height 25
+#define height 30
 #define area width*height
 #define column 1
 #define row width
@@ -14,17 +14,19 @@
 #define plant '|'
 #define flower '@'
 #define stem '+'
-#define seed 13
+#define star '*'
+#define seed 11
 int main(int argc, char** argv) {
 	int t;
 	int i;
+	int cloudVal;
 	int userIndex;
 	char term[area];
-	userIndex = width*20+ 12;
+	userIndex = width*3+15;
 	for(i = 1; i <= area; i++){
 		term[i] = air;
 	}
-	i =1+ userIndex -(userIndex %width);
+	i =1+ width*25;
 	while(!(i%width == 0)){
 		switch (rand()%seed%i){
 			case 0:
@@ -35,7 +37,55 @@ int main(int argc, char** argv) {
 				i+= column;
 			case 1:
 				term[i] = Uslope;
-				i-= row - column;
+				i+= column - row;
+			case 2:
+				term[i] = stem;
+				term[i-row] = flower;
+				i+= column;
+			case 23:
+				cloudVal = (rand()%2)+3;
+				term[i] = platform;
+				for (t = 0; t<cloudVal; t++){
+					term[i+1-t*(row)] = plant;
+				}
+				term[i+2] = platform;
+				for (t = 0; t<cloudVal; t++){
+					term[i+3-t*(row)] = plant;
+				}
+				term[i+4] = platform;
+				for (t = 0; t<5; t++){
+					term[i+t*(column)-cloudVal*(row)] = platform;
+				}
+				for (t = 0; t<5; t++){
+					term[i+t*(column)-(cloudVal+3)*(row)] = platform;
+				}
+				term[i-column-cloudVal*(row)] = Rcloud;
+				term[i-2*column-(cloudVal+1)*(row)] = Rcloud;
+				term[i-column-(cloudVal+2)*(row)] = Rcloud;
+				term[i+5*(column)-cloudVal*(row)] = Lcloud;
+				term[i+6*(column)-(cloudVal+1)*(row)] = Lcloud;
+				term[i+5*(column)-(cloudVal+2)*(row)] = Lcloud;
+				for(t = 0; t<5; t++){
+					i += column;
+					if(i%width == 0){
+						return 0;
+					}
+				}
+			case 24:
+				cloudVal = (rand()%9)+10;
+				term[i] = platform;
+				term[i-5*column-cloudVal*(row)] = Rcloud;
+				term[i+5*column-cloudVal*(row)] = Lcloud;
+				term[i-5*column-(cloudVal+2)*(row)] = Rcloud;
+				term[i+5*column-(cloudVal+2)*(row)] = Lcloud;
+				term[i-6*column-(cloudVal+1)*(row)] = Rcloud;
+				term[i+6*column-(cloudVal+1)*(row)] = Lcloud;
+				for (t = 0; t<9; t++){
+					term[i-4+t*(column)-cloudVal*(row)] = platform;
+				}
+				for (t = 0; t<9; t++){
+					term[i-4+t*(column)-(cloudVal+3)*(row)] = platform;
+				}
 			default:
 				term[i] = platform;
 				i+= column;
