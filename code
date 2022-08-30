@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <conio.h>
 #define width 210
 #define height 30
 #define area width*height
@@ -15,11 +16,14 @@
 #define flower '@'
 #define stem '+'
 #define star '*'
-#define seed 11
+#define seed 90
+#define UP 119
+#define LEFT 97
+#define RIGHT 100
 int main(int argc, char** argv) {
 	int t;
 	int i;
-	int cloudVal;
+	int variationVal;
 	int userIndex;
 	char term[area];
 	userIndex = width*3+15;
@@ -43,72 +47,96 @@ int main(int argc, char** argv) {
 				term[i-row] = flower;
 				i+= column;
 			case 23:
-				cloudVal = (rand()%2)+3;
+				variationVal = (rand()%2)+3;
 				term[i] = platform;
-				for (t = 0; t<cloudVal; t++){
+				for (t = 0; t<variationVal; t++){
 					term[i+1-t*(row)] = plant;
 				}
 				term[i+2] = platform;
-				for (t = 0; t<cloudVal; t++){
+				for (t = 0; t<variationVal; t++){
 					term[i+3-t*(row)] = plant;
 				}
 				term[i+4] = platform;
 				for (t = 0; t<5; t++){
-					term[i+t*(column)-cloudVal*(row)] = platform;
+					term[i+t*(column)-variationVal*(row)] = platform;
 				}
 				for (t = 0; t<5; t++){
-					term[i+t*(column)-(cloudVal+3)*(row)] = platform;
+					term[i+t*(column)-(variationVal+3)*(row)] = platform;
 				}
-				term[i-column-cloudVal*(row)] = Rcloud;
-				term[i-2*column-(cloudVal+1)*(row)] = Rcloud;
-				term[i-column-(cloudVal+2)*(row)] = Rcloud;
-				term[i+5*(column)-cloudVal*(row)] = Lcloud;
-				term[i+6*(column)-(cloudVal+1)*(row)] = Lcloud;
-				term[i+5*(column)-(cloudVal+2)*(row)] = Lcloud;
+				term[i-column-variationVal*(row)] = Rcloud;
+				term[i-2*column-(variationVal+1)*(row)] = Rcloud;
+				term[i-column-(variationVal+2)*(row)] = Rcloud;
+				term[i+5*(column)-variationVal*(row)] = Lcloud;
+				term[i+6*(column)-(variationVal+1)*(row)] = Lcloud;
+				term[i+5*(column)-(variationVal+2)*(row)] = Lcloud;
 				for(t = 0; t<5; t++){
 					i += column;
 					if(i%width == 0){
+						printf("bad seed - corrupted world");
 						return 0;
 					}
 				}
 			case 24:
-				cloudVal = (rand()%9)+10;
+				variationVal = (rand()%9)+10;
 				term[i] = platform;
-				term[i-5*column-cloudVal*(row)] = Rcloud;
-				term[i+5*column-cloudVal*(row)] = Lcloud;
-				term[i-5*column-(cloudVal+2)*(row)] = Rcloud;
-				term[i+5*column-(cloudVal+2)*(row)] = Lcloud;
-				term[i-6*column-(cloudVal+1)*(row)] = Rcloud;
-				term[i+6*column-(cloudVal+1)*(row)] = Lcloud;
+				term[i-5*column-variationVal*(row)] = Rcloud;
+				term[i+5*column-variationVal*(row)] = Lcloud;
+				term[i-5*column-(variationVal+2)*(row)] = Rcloud;
+				term[i+5*column-(variationVal+2)*(row)] = Lcloud;
+				term[i-6*column-(variationVal+1)*(row)] = Rcloud;
+				term[i+6*column-(variationVal+1)*(row)] = Lcloud;
 				for (t = 0; t<9; t++){
-					term[i-4+t*(column)-cloudVal*(row)] = platform;
+					term[i-4+t*(column)-variationVal*(row)] = platform;
 				}
 				for (t = 0; t<9; t++){
-					term[i-4+t*(column)-(cloudVal+3)*(row)] = platform;
+					term[i-4+t*(column)-(variationVal+3)*(row)] = platform;
 				}
 			default:
 				term[i] = platform;
 				i+= column;
 		}
 	}
-	userIndex -=5;
 	while (0 == 0){
 		//player controlled movement
-		t = getchar();
-		if(t == 97){
+		t = getch();
+		if(t == LEFT){
 			userIndex -= column;
-		}else if(t == 100){
+		}else if(t == RIGHT){
 			userIndex += column;
-		}else if(t == 103){
-			userIndex = 310;
+		}else if(t == UP){
+			userIndex -= row+row;
 		}
 		//terrain edited movement and render
-		if(t == 97 || t == 100){
+		if(t == LEFT || t == RIGHT || t == UP){
 			if(term[userIndex] == Uslope || term[userIndex] == Dslope){
 				userIndex -= row;
-			} else if(term[userIndex] == air){
+			} else if((term[userIndex] == air) && !(term[userIndex+row] == Uslope || term[userIndex+row] == Dslope)){
 				userIndex += row;
 			}	
+			system("cls");
+			for(i = 1; i <= area; i++){
+				//render player
+				if (i ==userIndex){
+					printf("A");
+				}else if (i == userIndex-row){
+					printf("|");
+				}else if (i ==userIndex-row-column){
+					printf("/");
+				}else if (i ==userIndex-row+column){
+					printf("\\");
+				}else if (i ==userIndex-2*(row)){
+					printf("o");	
+				}else{
+					//render world
+					putchar(term[i]);
+				}
+				if(i%width == 0){
+					printf("\n");
+				}
+			}
+		}
+		while(term[userIndex] == air){
+			userIndex += row;
 			system("cls");
 			for(i = 1; i <= area; i++){
 				//render player
