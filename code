@@ -107,34 +107,16 @@ int main(int argc, char** argv) {
 			userIndex -= row+row;
 		}
 		//terrain edited movement and render
-		if(t == LEFT || t == RIGHT || t == UP){
+		if(t == LEFT || t == RIGHT){
 			if(term[userIndex] == Uslope || term[userIndex] == Dslope){
 				userIndex -= row;
 			} else if((term[userIndex] == air) && !(term[userIndex+row] == Uslope || term[userIndex+row] == Dslope)){
 				userIndex += row;
 			}	
-			system("cls");
-			for(i = 1; i <= area; i++){
-				//render player
-				if (i ==userIndex){
-					printf("A");
-				}else if (i == userIndex-row){
-					printf("|");
-				}else if (i ==userIndex-row-column){
-					printf("/");
-				}else if (i ==userIndex-row+column){
-					printf("\\");
-				}else if (i ==userIndex-2*(row)){
-					printf("o");	
-				}else{
-					//render world
-					putchar(term[i]);
-				}
-				if(i%width == 0){
-					printf("\n");
-				}
-			}
 		}
+		//calls for screen update
+		userIndex -=row;
+		//
 		while(term[userIndex] == air){
 			userIndex += row;
 			system("cls");
