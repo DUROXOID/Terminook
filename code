@@ -16,16 +16,20 @@
 #define flower '@'
 #define stem '+'
 #define star '*'
-#define seed 90
 #define UP 119
 #define LEFT 97
 #define RIGHT 100
+#define seed 30
 int main(int argc, char** argv) {
+	int keyUpdated;
+	int walkAni;
 	int t;
 	int i;
 	int variationVal;
 	int userIndex;
 	char term[area];
+	walkAni = 0;
+	keyUpdated = 0;
 	userIndex = width*3+15;
 	for(i = 1; i <= area; i++){
 		term[i] = air;
@@ -72,8 +76,9 @@ int main(int argc, char** argv) {
 				for(t = 0; t<5; t++){
 					i += column;
 					if(i%width == 0){
-						printf("bad seed - corrupted world");
-						return 0;
+						//-1 as default still runs
+						i = -1;
+						t = 5;
 					}
 				}
 			case 24:
@@ -99,6 +104,7 @@ int main(int argc, char** argv) {
 	while (0 == 0){
 		//player controlled movement
 		t = getch();
+		keyUpdated = 0;
 		if(t == LEFT){
 			userIndex -= column;
 		}else if(t == RIGHT){
@@ -112,17 +118,17 @@ int main(int argc, char** argv) {
 				userIndex -= row;
 			} else if((term[userIndex] == air) && !(term[userIndex+row] == Uslope || term[userIndex+row] == Dslope)){
 				userIndex += row;
-			}	
+			}
+			walkAni = 1-walkAni;
 		}
-		//calls for screen update
-		userIndex -=row;
-		//
-		while(term[userIndex] == air){
-			userIndex += row;
+		while((term[userIndex] == air && !(term[userIndex+row] == Uslope || term[userIndex+row] == Dslope)) || keyUpdated == 0){
+			if(keyUpdated == 1){
+				userIndex += row;
+			}
 			system("cls");
 			for(i = 1; i <= area; i++){
 				//render player
-				if (i ==userIndex){
+				if (i ==userIndex && walkAni == 0){
 					printf("A");
 				}else if (i == userIndex-row){
 					printf("|");
@@ -131,7 +137,7 @@ int main(int argc, char** argv) {
 				}else if (i ==userIndex-row+column){
 					printf("\\");
 				}else if (i ==userIndex-2*(row)){
-					printf("o");	
+					printf("o");
 				}else{
 					//render world
 					putchar(term[i]);
@@ -140,6 +146,7 @@ int main(int argc, char** argv) {
 					printf("\n");
 				}
 			}
+			keyUpdated = 1;
 		}
 	}
 }
