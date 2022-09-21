@@ -20,6 +20,9 @@
 #define LEFT 97
 #define RIGHT 100
 #define seed 30
+//sets screen to dimentions
+system("mode con LINES = width, COLS = height");
+//
 int main(int argc, char** argv) {
 	int keyUpdated;
 	int walkAni;
