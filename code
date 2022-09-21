@@ -130,6 +130,10 @@ int main(int argc, char** argv) {
 				//render player
 				if (i ==userIndex && walkAni == 0){
 					printf("A");
+				}else if (i == userIndex-column && walkAni == 1){
+					printf("/");
+				}else if (i == userIndex+column && walkAni == 1){
+					printf("\\");
 				}else if (i == userIndex-row){
 					printf("|");
 				}else if (i ==userIndex-row-column){
