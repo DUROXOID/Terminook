@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
-#define width 210
-#define height 30
+#define width 200
+#define height 35
 #define area width*height
 #define column 1
 #define row width
@@ -19,11 +19,11 @@
 #define UP 119
 #define LEFT 97
 #define RIGHT 100
+#define ULEFT 65
+#define URIGHT 68
 #define seed 30
-//sets screen to dimentions
-system("mode con LINES = width, COLS = height");
-//
 int main(int argc, char** argv) {
+	system("mode con:cols=200 lines=35");
 	int keyUpdated;
 	int walkAni;
 	int t;
@@ -113,10 +113,19 @@ int main(int argc, char** argv) {
 		}else if(t == RIGHT){
 			userIndex += column;
 		}else if(t == UP){
-			userIndex -= row+row;
+			userIndex -= row;
+			if(term[userIndex] == plant){
+				walkAni = 0;
+			} else{
+				walkAni = 1;
+			}
+		}else if(t == ULEFT){
+			userIndex -= column+row+row;
+		}else if(t == URIGHT){
+			userIndex += column-row-row;
 		}
 		//terrain edited movement and render
-		if(t == LEFT || t == RIGHT){
+		if(t == LEFT || t == RIGHT || t == ULEFT || t == URIGHT){
 			if(term[userIndex] == Uslope || term[userIndex] == Dslope){
 				userIndex -= row;
 			} else if((term[userIndex] == air) && !(term[userIndex+row] == Uslope || term[userIndex+row] == Dslope)){
@@ -127,9 +136,11 @@ int main(int argc, char** argv) {
 		while((term[userIndex] == air && !(term[userIndex+row] == Uslope || term[userIndex+row] == Dslope)) || keyUpdated == 0){
 			if(keyUpdated == 1){
 				userIndex += row;
+				walkAni = 0;
 			}
 			system("cls");
-			for(i = 1; i <= area; i++){
+			//cycles through term and prints character or world section
+			for(i = 0; i < area; i++){
 				//render player
 				if (i ==userIndex && walkAni == 0){
 					printf("A");
@@ -145,12 +156,12 @@ int main(int argc, char** argv) {
 					printf("\\");
 				}else if (i ==userIndex-2*(row)){
 					printf("o");
+				}else if (i+1 == area){
+					//if curser spot
+					printf("x");
 				}else{
 					//render world
 					putchar(term[i]);
-				}
-				if(i%width == 0){
-					printf("\n");
 				}
 			}
 			keyUpdated = 1;
