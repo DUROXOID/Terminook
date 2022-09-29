@@ -46,6 +46,10 @@ int main(int argc, char** argv) {
 				i+= column;
 				term[i] = platform;
 				i+= column;
+				term[i] = platform;
+				i+= column;
+				term[i] = platform;
+				i+= column;
 			case 1:
 				term[i] = Uslope;
 				i+= column - row;
@@ -106,7 +110,10 @@ int main(int argc, char** argv) {
 	}
 	while (0 == 0){
 		//player controlled movement
-		t = getch();
+		t = 0;
+		while (!(t == LEFT || t == RIGHT || t == UP || t == ULEFT || t == URIGHT)){
+			t = getch();
+		}
 		keyUpdated = 0;
 		if(t == LEFT){
 			userIndex -= column;
@@ -138,6 +145,7 @@ int main(int argc, char** argv) {
 				userIndex += row;
 				walkAni = 0;
 			}
+			system("mode con:cols=200 lines=35");
 			system("cls");
 			//cycles through term and prints character or world section
 			for(i = 0; i < area; i++){
@@ -156,9 +164,6 @@ int main(int argc, char** argv) {
 					printf("\\");
 				}else if (i ==userIndex-2*(row)){
 					printf("o");
-				}else if (i+1 == area){
-					//if curser spot
-					printf("x");
 				}else{
 					//render world
 					putchar(term[i]);
