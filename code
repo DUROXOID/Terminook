@@ -6,6 +6,7 @@
 #define area width*height
 #define column 1
 #define row width
+//items
 #define air ' '
 #define platform '_'
 #define Uslope '/'
@@ -16,14 +17,20 @@
 #define flower '@'
 #define stem '+'
 #define star '*'
+//directions
 #define UP 119
 #define LEFT 97
 #define RIGHT 100
 #define ULEFT 65
 #define URIGHT 68
-#define seed 30
+//world gen
+#define seed 10
+#define CLOUD 24
+#define TREE 23
+#define DSLOPE 0
+#define USLOPE 1
+#define FLOWER 2
 int main(int argc, char** argv) {
-	system("mode con:cols=200 lines=35");
 	int keyUpdated;
 	int walkAni;
 	int t;
@@ -40,24 +47,34 @@ int main(int argc, char** argv) {
 	i =1+ width*25;
 	while(!(i%width == 0)){
 		switch (rand()%seed%i){
-			case 0:
+			case DSLOPE:
 				i+= row;
 				term[i] = Dslope;
 				i+= column;
-				term[i] = platform;
-				i+= column;
-				term[i] = platform;
-				i+= column;
-				term[i] = platform;
-				i+= column;
-			case 1:
+				if(i%width == 0){
+					break;
+				}
+				for(t = 0; t < 3; t++){
+					term[i] = platform;
+					i+= column;
+					if(i%width == 0){
+						break;
+					}
+				}
+			case USLOPE:
 				term[i] = Uslope;
 				i+= column - row;
-			case 2:
+				if(i%width == 0){
+					break;
+				}
+			case FLOWER:
 				term[i] = stem;
 				term[i-row] = flower;
 				i+= column;
-			case 23:
+				if(i%width == 0){
+					break;
+				}
+			case TREE:
 				variationVal = (rand()%2)+3;
 				term[i] = platform;
 				for (t = 0; t<variationVal; t++){
@@ -84,11 +101,14 @@ int main(int argc, char** argv) {
 					i += column;
 					if(i%width == 0){
 						//-1 as default still runs
-						i = -1;
-						t = 5;
+						break;
 					}
 				}
-			case 24:
+				if(i%width == 0){
+					break;
+				}
+			case CLOUD:
+				//here break statement isnt needed as cloud does no incrementatio
 				variationVal = (rand()%9)+10;
 				term[i] = platform;
 				term[i-5*column-variationVal*(row)] = Rcloud;
@@ -106,8 +126,13 @@ int main(int argc, char** argv) {
 			default:
 				term[i] = platform;
 				i+= column;
+				if(i%width == 0){
+					break;
+				}
 		}
 	}
+	system("mode con:cols=200 lines=35");
+	printf("PRESS ANY KEY TO START> ");
 	while (0 == 0){
 		//player controlled movement
 		t = 0;
